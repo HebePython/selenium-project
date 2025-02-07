@@ -9,6 +9,8 @@ def get_driver():
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://testautomationpractice.blogspot.com/")
 
+    driver.maximize_window()
+
     driver.implicitly_wait(2)
 
     # explicit wait test

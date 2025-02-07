@@ -20,8 +20,11 @@ def main(driver):
         time.sleep(3)
 
     except NoSuchElementException as e:
-        print("UH OH")
-
+        print(f"Element not found: {e}")
+    except TimeoutException as e:
+        print(f"Timeout occurred: {e}")
+    except Exception as e:
+        print(f"An unexpected error occurred: {e}")
     finally:
         driver.quit()
 
