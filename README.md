@@ -43,7 +43,7 @@ python src/main.py
 To execute the test cases, run the following command:
 
 ```
-python -m unittest src/tests/test_example.py
+pytest src/tests/test_example.py
 ```
 
 ## License
