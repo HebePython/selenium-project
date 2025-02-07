@@ -1,17 +1,17 @@
+import pytest
 from selenium import webdriver
-import unittest
 
-class TestExample(unittest.TestCase):
+@pytest.fixture(scope="module")
+def driver():
+    driver = webdriver.Chrome()
+    yield driver
+    
+    driver.quit()
 
-    def setUp(self):
-        self.driver = webdriver.Chrome()  # You can change this to the appropriate WebDriver for your browser
-        self.driver.get("https://testautomationpractice.blogspot.com/")
+def test_title(driver):
+    driver.get("https://testautomationpractice.blogspot.com/")
 
-    def test_title(self):
-        self.assertIn("Practice", self.driver.title)
+    driver.implicitly_wait(2)
 
-    def tearDown(self):
-        self.driver.quit()
-
-if __name__ == "__main__":
-    unittest.main()
+    title = driver.title
+    assert title == "Automation Testing Practice", f"Expected title to be 'Automation Testing Practice' bu got '{title}'"
