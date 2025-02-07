@@ -26,6 +26,18 @@ def test_check_labels(driver):
     assert male_element.is_selected(), "Male checkbox should be selected"
     assert not female_element.is_selected(), "Female checkbox should not be selected"
 
- #   female_element.click()
+    female_element.click()
     assert female_element.is_selected(), "Female checkbox should be selected"
     assert not male_element.is_selected(), "Male checkbox should not be selected"
+
+
+def check_weekday_forms(driver, day):
+    checkbox_element = driver.find_element(By.ID, day)
+
+    checkbox_element.click()
+
+    assert checkbox_element.is_selected(), f"{day.capitalize()} checkbox should be selected"
+
+    checkbox_element.click()
+
+    assert not checkbox_element.is_selected(), f"{day.capitalize()} checkbox should not be selected"

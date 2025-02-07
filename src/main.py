@@ -1,5 +1,5 @@
 from driver_setup import get_driver
-from gui_elements import valid_text_box_inputs, test_check_labels
+from gui_elements import valid_text_box_inputs, test_check_labels, check_weekday_forms
 from selenium.common.exceptions import NoSuchElementException, TimeoutException
 import time
 
@@ -18,6 +18,7 @@ def main(driver):
         driver.refresh()
         test_check_labels(driver)
         time.sleep(3)
+        check_weekday_forms(driver, "sunday")
 
     except NoSuchElementException as e:
         print(f"Element not found: {e}")

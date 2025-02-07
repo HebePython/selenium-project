@@ -1,9 +1,11 @@
 import pytest
 from selenium import webdriver
+from driver_setup import get_driver
+from gui_elements import check_weekday_forms
 
 @pytest.fixture(scope="module")
 def driver():
-    driver = webdriver.Chrome()
+    driver = get_driver()
     yield driver
     
     driver.quit()
