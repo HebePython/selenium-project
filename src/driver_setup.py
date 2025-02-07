@@ -1,5 +1,4 @@
 from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.chrome.options import Options
 
 def get_driver():
@@ -7,7 +6,7 @@ def get_driver():
     chrome_options = Options()
     chrome_options.add_argument("--disable-extensions")
 
-    driver = webdriver.Chrome(chrome_options=chrome_options)
+    driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://testautomationpractice.blogspot.com/")
 
     driver.implicitly_wait(2)

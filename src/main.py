@@ -1,25 +1,29 @@
+from driver_setup import get_driver
+from gui_elements import valid_text_box_inputs, test_check_labels
+from selenium.common.exceptions import NoSuchElementException, TimeoutException
+import time
+
 print("Welcome to selenium test")
 
-from selenium import webdriver
-from selenium.webdriver.support.ui import WebDriverWait
-
-
-# Initialize the WebDriver
-driver = webdriver.Chrome()  # Ensure you have the ChromeDriver installed and in your PATH
-
-# Navigate to the specified URL
-driver.get("https://testautomationpractice.blogspot.com/")
-
-# Implicit wait
-driver.implicitly_wait(2)
-
-# explicit wait
-# wait = WebDriverWait(driver, timeout=2)
-# wait.until(lambda d : revealed.is_displayed())
+driver = get_driver()
 
 # Find title element
 title = driver.title
-assert title 
 
-# Close the WebDriver
-driver.quit()
+# Find name, email, phone, address text_boxes
+def main(driver):
+    try:
+        valid_text_box_inputs(driver)
+        time.sleep(3)
+        driver.refresh()
+        test_check_labels(driver)
+        time.sleep(3)
+
+    except NoSuchElementException as e:
+        print("UH OH")
+
+    finally:
+        driver.quit()
+
+
+main(driver)
