@@ -1,6 +1,6 @@
 import pytest
 from driver_setup import get_driver
-from gui_elements import check_weekday_forms, drop_down_country, scroll_list_colors
+from gui_elements import check_weekday_forms, drop_down_country, scroll_list_colors, sorted_list_animals
 
 @pytest.fixture(scope="module")
 def driver():
@@ -20,3 +20,7 @@ def test_drop_down(driver, country):
 @pytest.mark.parametrize("color", ["Red", "Blue", "Green", "Yellow", "Red", "White", "Green"])
 def test_color_list(driver, color):
     scroll_list_colors(driver, color)
+
+@pytest.mark.parametrize("index", range(0, 9))
+def test_sorted_list_animals(driver, index):
+    sorted_list_animals(driver, index)
