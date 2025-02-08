@@ -1,9 +1,9 @@
 import pytest
-from selenium import webdriver
+from driver_setup import get_driver
 
 @pytest.fixture(scope="module")
 def driver():
-    driver = webdriver.Chrome()
+    driver = get_driver()
     yield driver
     
     driver.quit()
