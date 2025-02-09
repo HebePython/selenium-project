@@ -16,6 +16,7 @@ class HomePage:
         ADDRESS = (By.ID, "textarea")
         MALE_BOX = (By.ID, "male")
         FEMALE_BOX = (By.ID, "female")
+
         
         def __init__(self, driver):
             self.driver = driver
@@ -93,7 +94,7 @@ class HomePage:
             return select.first_selected_option.text
 #endregion
 
-#region date picker
+#region date picker 1
 
         def open_date_picker(self):
              element = self.driver.find_element(By.ID, "datepicker")
@@ -110,6 +111,9 @@ class HomePage:
 
         def datepicker_title(self):
             element = self.driver.find_element(By.CLASS_NAME, "ui-datepicker-title")
+            month = element.find_element(By.CLASS_NAME, "ui-datepicker-month").text
+            year = element.find_element(By.CLASS_NAME, "ui-datepicker-year").text
+            return year, month
 
         def check_today_date(self):
             element = self.driver.find_element(By.CSS_SELECTOR, "[class*='ui-datepicker-today']")
@@ -118,5 +122,13 @@ class HomePage:
             day = child.get_attribute("data-date")
             return year, month, day
             
+        def datepicker_month_button(self, input):
+            prev_button = self.driver.find_element(By.CLASS_NAME, "ui-datepicker-next ui-corner-all")
+            next_button = self.driver.find_element(By.CLASS_NAME, "ui-datepicker-prev ui-corner-all")
+
+            if input == "prev":
+                 prev_button.click()
+            else:
+                 next_button.click()
 
 #endregion

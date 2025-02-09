@@ -11,7 +11,7 @@ def driver():
     yield driver
     driver.quit()
 
-
+#region test suite for Date Picker 1
 def test_text_input_datepicker(driver):
     home_page = HomePage(driver)
     assert home_page.date_selector("02/02/2023"), f" Date should be 02/02/2023"
@@ -28,6 +28,7 @@ def test_todays_date(driver):
 
     ret_year, ret_month, ret_day = home_page.check_today_date()
 
+    # '- 1' to month because Jan = 0 on website.
     exp_year = date.today().year
     exp_month = date.today().month - 1
     exp_day = date.today().day
@@ -35,3 +36,19 @@ def test_todays_date(driver):
     assert int(ret_year) == exp_year, f"Expected year {exp_year} but got {ret_year}"
     assert int(ret_month) == exp_month, f"Expected month {exp_month} but got {ret_month}"
     assert int(ret_day) == exp_day, f"Expected day {exp_day} but got {ret_day}"
+
+
+def test_month_buttons(driver):
+    home_page = HomePage(driver)
+
+    #TODO first, look at what month & year is currently selected
+    #     second, press button next or prev
+    #     third, check that new current month & year has correctly changed.
+
+    home_page.datepicker_month_button("prev")
+
+
+
+
+
+#endregion
