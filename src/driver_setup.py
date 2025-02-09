@@ -13,7 +13,7 @@ def get_driver():
 
     driver.implicitly_wait(2)
 
-    # explicit wait test
+    # explicit wait, don't mix with implicit.
     # wait = WebDriverWait(driver, timeout=2)
     # wait.until(lambda d : revealed.is_displayed())
 
