@@ -2,7 +2,8 @@ import pytest
 from pages import HomePage
 from driver_setup import get_driver
 from datetime import date
-
+from resources.constants import MONTHS
+import time
 
 # creates driver instance, yields it to tests, then closes driver.
 @pytest.fixture(scope="module")
@@ -41,13 +42,25 @@ def test_todays_date(driver):
 def test_month_buttons(driver):
     home_page = HomePage(driver)
 
+    cur_year, cur_month = home_page.datepicker_title()
+
+    assert cur_month == date.today().strftime("%B")
+    assert int(cur_year) == date.today().year
     #TODO first, look at what month & year is currently selected
     #     second, press button next or prev
     #     third, check that new current month & year has correctly changed.
 
     home_page.datepicker_month_button("prev")
 
+    
 
+    time.sleep(5)
+
+    # assert cur_month == 
+
+    home_page.datepicker_month_button("next")
+
+    time.sleep(5)
 
 
 

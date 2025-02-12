@@ -123,12 +123,12 @@ class HomePage:
             return year, month, day
             
         def datepicker_month_button(self, input):
-            prev_button = self.driver.find_element(By.CLASS_NAME, "ui-datepicker-next ui-corner-all")
-            next_button = self.driver.find_element(By.CLASS_NAME, "ui-datepicker-prev ui-corner-all")
 
             if input == "prev":
-                 prev_button.click()
+                prev_button = self.driver.find_element(By.CSS_SELECTOR, "a.ui-datepicker-prev.ui-corner-all")
+                prev_button.click()
             else:
-                 next_button.click()
+                next_button = self.driver.find_element(By.CSS_SELECTOR, "a.ui-datepicker-next.ui-corner-all")
+                next_button.click()
 
 #endregion
