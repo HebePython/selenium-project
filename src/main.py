@@ -15,6 +15,7 @@ def main(driver):
     try:
         print("PLACEHOLDER")
         date_selector(driver, "02/03/2025")
+        print("EXTRA TEST FOR JENKINS")
     except NoSuchElementException as e:
         print(f"Element not found: {e}")
     except TimeoutException as e:
