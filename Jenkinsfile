@@ -1,19 +1,6 @@
 pipeline {
-    agent {
-        dockerfile {
-            filename 'Dockerfile'
-            args '--network="host" -v /var/run/docker.sock:/var/run/docker.sock'
-        }
-    }
-
-    triggers {
-        githubPush()
-    }
-
-    parameters {
-        string(name: 'BRANCH_NAME', defaultValue: 'main', description: 'Branch to build')
-    }
-
+    agent any  // Use the Jenkins agent directly
+    
     stages {
         stage('Checkout') {
             steps {
@@ -21,34 +8,28 @@ pipeline {
             }
         }
         
-        stage('Setup') {
+        stage('Setup Python Environment') {
             steps {
                 sh '''
-                apt-get update
-                apt-get install -y wget gnupg2
-                wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add -
-                echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list
-                apt-get update
-                apt-get install -y google-chrome-stable
+                # Create Python virtual environment
+                python -m venv venv
+                . venv/bin/activate
+                
+                # Install requirements
                 pip install -r requirements.txt
-                pip install pytest-xdist pytest-html
+                pip install pytest pytest-html
                 '''
             }
         }
         
-        stage('Test') {
+        stage('Run Tests') {
             steps {
                 script {
-                    if (env.BRANCH_NAME == 'main') {
-                        // Run full test suite for main branch
-                        sh 'python -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html'
-                    } else if (env.BRANCH_NAME == 'Development') {
-                        // Maybe run a subset of tests for dev branch or with different flags
-                        sh 'python -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html'
-                    } else if (env.BRANCH_NAME.startsWith('feature/')) {
-                        // For feature branches, maybe run only specific tests
-                        sh 'python -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html'
-                    }
+                    sh '''
+                    . venv/bin/activate
+                    mkdir -p test-results
+                    python -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html
+                    '''
                 }
             }
             post {
