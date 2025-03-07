@@ -8,12 +8,28 @@ pipeline {
             }
         }
         
+        stage('Install Dependencies') {
+            steps {
+                sh '''
+                # Install Python3 if not available
+                apt-get update || true
+                apt-get install -y python3 python3-pip python3-venv || true
+                
+                # Display Python version
+                python3 --version
+                '''
+            }
+        }
+        
         stage('Setup Python Environment') {
             steps {
                 sh '''
-                # Create Python virtual environment
-                python -m venv venv
+                # Create virtual environment with python3
+                python3 -m venv venv || python -m venv venv
                 . venv/bin/activate
+                
+                # Upgrade pip
+                pip install --upgrade pip
                 
                 # Install requirements
                 pip install -r requirements.txt
