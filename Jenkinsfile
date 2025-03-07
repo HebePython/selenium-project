@@ -1,7 +1,7 @@
 pipeline {
     agent {
-        docker {
-            image 'python:3.9-slim'
+        dockerfile {
+            filename 'Dockerfile'
             args '--network="host" -v /var/run/docker.sock:/var/run/docker.sock'
         }
     }
