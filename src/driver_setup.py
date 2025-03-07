@@ -5,6 +5,7 @@ def get_driver():
 
     chrome_options = Options()
     chrome_options.add_argument("--disable-extensions")
+    chrome_options.add_argument("--headless")
 
     driver = webdriver.Chrome(options=chrome_options)
     driver.get("https://testautomationpractice.blogspot.com/")
