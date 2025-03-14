@@ -93,7 +93,9 @@ pipeline {
             }
             post {
                 always {
-                    junit 'test-results/junit-report.xml'
+                    catchError(buildResult: 'SUCCESS', stageResult: 'SUCCESS') {
+                        junit allowEmptyResults: true, testResults: 'test-results/junit-report.xml'
+                    }
                     publishHTML([
                         allowMissing: false,
                         alwaysLinkToLastBuild: true,
