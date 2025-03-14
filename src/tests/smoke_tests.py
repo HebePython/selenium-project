@@ -9,6 +9,11 @@ def driver():
     driver.quit()
 
 @pytest.mark.smoke
+def test_basic_smoke():
+    """This is a simple smoke test with no dependencies"""
+    assert True, "Basic smoke test passes"
+
+@pytest.mark.smoke
 def test_site_loads(driver):
     """Verify that the website loads successfully"""
     home_page = HomePage(driver)

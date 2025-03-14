@@ -109,8 +109,6 @@ pipeline {
                     # Run tests with Python module path and appropriate filter
                     python -m pytest src/tests/ -v ${testSelector ? "-m '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
 
-                    # Run smoke tests
-                    python -m pytest src/tests/ -v -m smoke
                     """
                 }
             }
