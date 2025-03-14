@@ -110,7 +110,7 @@ pipeline {
                     python -m pytest src/tests/ -v ${testSelector ? "-m '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
 
                     # Run smoke test directly.
-                    if [ "${testSelector}" == "smoke" ]; then
+                    if [ "${testSelector}" = "smoke" ]; then  # Use single equals sign
                         echo "=== RUNNING SMOKE TESTS DIRECTLY ==="
                         python -m pytest src/tests/smoke_tests.py -v --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
                     fi
