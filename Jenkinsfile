@@ -2,16 +2,8 @@ pipeline {
     agent any
 
     triggers {
-        // Simple periodic polling as a fallback
+        // Simple periodic polling - this will work on all Jenkins installations
         pollSCM('H/5 * * * *')
-        
-        // GitHub PR trigger with correct syntax
-        githubPullRequests {
-            spec('H/5 * * * *')
-            branchRestriction {
-                targetBranch('Development', 'main')
-            }
-        }
     }
     
     stages {
