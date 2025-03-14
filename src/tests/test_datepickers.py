@@ -13,6 +13,7 @@ def driver():
     driver.quit()
 
 #region test suite for Date Picker 1
+@pytest.mark.new_feature
 def test_text_input_datepicker(driver):
     home_page = HomePage(driver)
     assert home_page.date_selector("02/02/2023"), f" Date should be 02/02/2023"
