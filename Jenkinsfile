@@ -38,7 +38,7 @@ pipeline {
                 . venv/bin/activate
                 
                 # Install packages within virtual environment
-                pip install pytest pytest-html selenium pytest-markers
+                pip install pytest pytest-html selenium
                 
                 # Create test results directory
                 mkdir -p test-results
