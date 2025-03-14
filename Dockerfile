@@ -13,11 +13,14 @@ RUN apt-get update && \
     apt-get update && \
     apt-get install -y google-chrome-stable
 
-# Install ChromeDriver - using a specific version
-RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip && \
-    unzip /tmp/chromedriver.zip -d /usr/local/bin && \
-    rm /tmp/chromedriver.zip && \
-    chmod +x /usr/local/bin/chromedriver
+# Install ChromeDriver matching Chrome version
+RUN apt-get update && apt-get install -y curl unzip && \
+    CHROME_VERSION=$(google-chrome --version | awk '{print $3}' | cut -d. -f1) && \
+    wget -q -O /tmp/chromedriver_linux64.zip "https://storage.googleapis.com/chrome-for-testing-public/$(curl -s https://googlechromelabs.github.io/chrome-for-testing/LATEST_RELEASE_$CHROME_VERSION)/linux64/chromedriver-linux64.zip" && \
+    unzip /tmp/chromedriver_linux64.zip -d /tmp/ && \
+    mv /tmp/chromedriver-linux64/chromedriver /usr/local/bin/chromedriver && \
+    chmod +x /usr/local/bin/chromedriver && \
+    rm -rf /tmp/chromedriver*
 
 # Clean up
 RUN apt-get clean && \
