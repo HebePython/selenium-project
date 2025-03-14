@@ -26,8 +26,14 @@ pipeline {
         stage('Prepare Test Environment') {
             steps {
                 sh '''
-                # Use Python if available, install packages in user space
-                python3 -m pip install --user pytest pytest-html selenium || python -m pip install --user pytest pytest-html selenium
+                # Create a Python virtual environment
+                python3 -m venv venv
+                
+                # Activate the virtual environment
+                . venv/bin/activate
+                
+                # Install packages within virtual environment
+                pip install pytest pytest-html selenium
                 
                 # Create test results directory
                 mkdir -p test-results
@@ -38,14 +44,13 @@ pipeline {
         stage('Run Tests') {
             steps {
                 sh '''
-                # Add pip user bin directory to PATH
-                export PATH=$PATH:~/.local/bin
+                # Activate the virtual environment
+                . venv/bin/activate
                 
                 # Export environment variable for headless mode
                 export SELENIUM_HEADLESS=true
                 
                 # Run tests with Python module path
-                python3 -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html || \
                 python -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html
                 '''
             }
