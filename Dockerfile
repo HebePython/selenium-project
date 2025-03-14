@@ -1,26 +1,26 @@
-FROM python:3.9-slim
+FROM jenkins/jenkins:lts
 
-# Install Docker CLI
+USER root
+# Install Python and tools
 RUN apt-get update && \
-    apt-get install -y apt-transport-https ca-certificates curl gnupg lsb-release && \
-    curl -fsSL https://download.docker.com/linux/debian/gpg | gpg --dearmor -o /usr/share/keyrings/docker-archive-keyring.gpg && \
-    echo "deb [arch=amd64 signed-by=/usr/share/keyrings/docker-archive-keyring.gpg] https://download.docker.com/linux/debian $(lsb_release -cs) stable" | tee /etc/apt/sources.list.d/docker.list > /dev/null && \
-    apt-get update && \
-    apt-get install -y docker-ce-cli
+    apt-get install -y python3 python3-pip python3-venv curl unzip
 
-# Install Chrome for Selenium
+# Install Chrome browser
 RUN apt-get update && \
-    apt-get install -y wget gnupg2 && \
+    apt-get install -y wget gnupg && \
     wget -q -O - https://dl.google.com/linux/linux_signing_key.pub | apt-key add - && \
-    echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google-chrome.list && \
+    sh -c 'echo "deb [arch=amd64] http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list' && \
     apt-get update && \
     apt-get install -y google-chrome-stable
 
-# Install Python requirements
-WORKDIR /app
-COPY requirements.txt .
-RUN pip install -r requirements.txt
-RUN pip install pytest-xdist pytest-html
+# Install ChromeDriver - using a specific version
+RUN wget -q -O /tmp/chromedriver.zip https://chromedriver.storage.googleapis.com/114.0.5735.90/chromedriver_linux64.zip && \
+    unzip /tmp/chromedriver.zip -d /usr/local/bin && \
+    rm /tmp/chromedriver.zip && \
+    chmod +x /usr/local/bin/chromedriver
 
-# Set the Chrome path for WebDriver
-ENV PATH="/usr/bin/google-chrome:${PATH}"
+# Clean up
+RUN apt-get clean && \
+    rm -rf /var/lib/apt/lists/*
+
+USER jenkins

@@ -8,6 +8,21 @@ pipeline {
             }
         }
         
+        stage('Verify Environment') {
+            steps {
+                sh '''
+                echo "Python version:"
+                python3 --version
+                
+                echo "Chrome version:"
+                google-chrome --version
+                
+                echo "ChromeDriver version:"
+                chromedriver --version
+                '''
+            }
+        }
+        
         stage('Prepare Test Environment') {
             steps {
                 sh '''
