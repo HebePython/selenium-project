@@ -107,7 +107,7 @@ pipeline {
                     python -c "import sys; sys.path.append('src'); import pages; import driver_setup" || echo "Import error detected"
 
                     # Run tests with Python module path and appropriate filter
-                    python -m pytest src/tests/ -v ${testSelector ? "-k '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
+                    python -m pytest src/tests/ -v ${testSelector ? "-m '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
 
                     # Run smoke tests
                     python -m pytest src/tests/ -v -m smoke
