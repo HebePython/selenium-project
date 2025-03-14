@@ -1,5 +1,19 @@
 pipeline {
     agent any
+
+    triggers {
+        // Add GitHub pull request trigger
+        githubPullRequest(
+            cron: 'H/5 * * * *',
+            triggerPhrase: '.*test\\s+this\\s+please.*',
+            onlyTriggerPhrase: false,
+            useGitHubHooks: true,
+            permitAll: false,
+            autoCloseFailedPullRequests: false,
+            displayBuildErrorsOnDownstreamBuilds: true,
+            whiteListTargetBranches: ['development', 'main']
+        )
+    }
     
     stages {
         stage('Checkout') {
