@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     triggers {
-        githubPullRequest(
+        githubPullRequests(
             cron: 'H/5 * * * *',
             triggerPhrase: '.*test\\s+this\\s+please.*',
             onlyTriggerPhrase: false,
