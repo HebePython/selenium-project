@@ -2,16 +2,16 @@ pipeline {
     agent any
 
     triggers {
-        githubPullRequests(
-            cron: 'H/5 * * * *',
-            triggerPhrase: '.*test\\s+this\\s+please.*',
-            onlyTriggerPhrase: false,
-            useGitHubHooks: true,
-            permitAll: false,
-            autoCloseFailedPullRequests: false,
-            displayBuildErrorsOnDownstreamBuilds: true,
-            whiteListTargetBranches: ['Development', 'main']
-        )
+        // Simple periodic polling as a fallback
+        pollSCM('H/5 * * * *')
+        
+        // GitHub PR trigger with correct syntax
+        githubPullRequests {
+            spec('H/5 * * * *')
+            branchRestriction {
+                targetBranch('Development', 'main')
+            }
+        }
     }
     
     stages {
