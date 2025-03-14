@@ -8,27 +8,29 @@ pipeline {
             }
         }
         
-        stage('Run Tests') {
-            agent {
-                docker {
-                    image 'python:3.9'
-                    args '-v ${WORKSPACE}:/workspace'
-                    reuseNode true
-                }
-            }
+        stage('Prepare Test Environment') {
             steps {
                 sh '''
-                cd /workspace
-                pip install -r requirements.txt
-                pip install pytest pytest-html
+                # Use Python if available, install packages in user space
+                python3 -m pip install --user pytest pytest-html selenium || python -m pip install --user pytest pytest-html selenium
                 
-                # Install Chrome
-                wget -q -O - https://dl-ssl.google.com/linux/linux_signing_key.pub | apt-key add -
-                echo "deb http://dl.google.com/linux/chrome/deb/ stable main" >> /etc/apt/sources.list.d/google.list
-                apt-get update
-                apt-get install -y google-chrome-stable
-                
+                # Create test results directory
                 mkdir -p test-results
+                '''
+            }
+        }
+        
+        stage('Run Tests') {
+            steps {
+                sh '''
+                # Add pip user bin directory to PATH
+                export PATH=$PATH:~/.local/bin
+                
+                # Export environment variable for headless mode
+                export SELENIUM_HEADLESS=true
+                
+                # Run tests with Python module path
+                python3 -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html || \
                 python -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html
                 '''
             }
