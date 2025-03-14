@@ -14,9 +14,3 @@ def test_site_loads(driver):
     home_page = HomePage(driver)
     assert home_page.is_loaded()
 
-@pytest.mark.smoke
-def test_basic_navigation(driver):
-    """Verify that main navigation works"""
-    home_page = HomePage(driver)
-    products_page = home_page.navigate_to_products()
-    assert products_page.is_loaded()

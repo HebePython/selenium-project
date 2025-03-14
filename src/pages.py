@@ -2,6 +2,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import Select
 from resources.constants import TEXT_BOX_INPUT_1
 from datetime import date
+from resources.expected_conditions import wait_for_element
 
 class HomePage:
 #region Locator constants + constructor      
@@ -20,6 +21,14 @@ class HomePage:
         
         def __init__(self, driver):
             self.driver = driver
+
+        def is_loaded(self):
+            # Checks if homepage is loaded
+            try:
+                wait_for_element(self.driver, By.ID, "name", timeout=10)
+                return True
+            except:
+                return False
 
 #endregion
 
