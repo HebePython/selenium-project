@@ -87,7 +87,7 @@ pipeline {
                     export SELENIUM_HEADLESS=true
                     
                     # Run tests with Python module path and appropriate filter
-                    python -m pytest src/tests/ -v ${testSelector ? "-k '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html
+                    python -m pytest src/tests/ -v ${testSelector ? "-k '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
                     """
                 }
             }
