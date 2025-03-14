@@ -85,7 +85,27 @@ pipeline {
                     
                     # Export environment variable for headless mode
                     export SELENIUM_HEADLESS=true
-                    
+
+                    # List test directory contents
+                    echo "=== DIRECTORY STRUCTURE ==="
+                    find src -type f -name "*.py" | sort
+
+                    # Check if pytest.ini is found
+                    echo "=== PYTEST.INI CONTENT ==="
+                    cat pytest.ini || echo "pytest.ini not found!"
+
+                    # Show which tests are collected
+                    echo "=== COLLECTED TESTS ==="
+                    python -m pytest src/tests/ --collect-only
+
+                    # Try collecting just smoke_tests.py
+                    echo "=== SMOKE TESTS COLLECTION ==="
+                    python -m pytest src/tests/smoke_tests.py --collect-only || echo "Failed to collect smoke tests"
+
+                    # Check for import errors
+                    echo "=== CHECKING FOR IMPORT ERRORS ==="
+                    python -c "import sys; sys.path.append('src'); import pages; import driver_setup" || echo "Import error detected"
+
                     # Run tests with Python module path and appropriate filter
                     python -m pytest src/tests/ -v ${testSelector ? "-k '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
                     """
