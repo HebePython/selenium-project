@@ -38,7 +38,7 @@ pipeline {
                 . venv/bin/activate
                 
                 # Install packages within virtual environment
-                pip install pytest pytest-html selenium
+                pip install pytest pytest-html pytest-cov selenium
                 
                 # Create test results directory
                 mkdir -p test-results
@@ -86,28 +86,8 @@ pipeline {
                     # Export environment variable for headless mode
                     export SELENIUM_HEADLESS=true
 
-                    # List test directory contents
-                    echo "=== DIRECTORY STRUCTURE ==="
-                    find src -type f -name "*.py" | sort
-
-                    # Check if pytest.ini is found
-                    echo "=== PYTEST.INI CONTENT ==="
-                    cat pytest.ini || echo "pytest.ini not found!"
-
-                    # Show which tests are collected
-                    echo "=== COLLECTED TESTS ==="
-                    python -m pytest src/tests/ --collect-only
-
-                    # Try collecting just smoke_tests.py
-                    echo "=== SMOKE TESTS COLLECTION ==="
-                    python -m pytest src/tests/smoke_tests.py --collect-only || echo "Failed to collect smoke tests"
-
-                    # Check for import errors
-                    echo "=== CHECKING FOR IMPORT ERRORS ==="
-                    python -c "import sys; sys.path.append('src'); import pages; import driver_setup" || echo "Import error detected"
-
-                    # Run tests with Python module path and appropriate filter
-                    python -m pytest src/tests/ -v ${testSelector ? "-m '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
+                    # Run tests with coverage
+                    python -m pytest src/tests/ -v ${testSelector ? "-m '" + testSelector + "'" : ""} --cov=src --cov-report=html:test-results/coverage --cov-report=xml:test-results/coverage.xml --junitxml=test-results/junit-report.xml --html=test-results/report.html || true
 
                     # Run smoke test directly.
                     if [ "${testSelector}" = "smoke" ]; then  # Use single equals sign
@@ -130,6 +110,15 @@ pipeline {
                         reportDir: 'test-results',
                         reportFiles: 'report.html',
                         reportName: 'Test Report'
+                    ])
+
+                    publishHTML([
+                        allowMissing: false,
+                        alwaysLinkToLastBuild: true,
+                        keepAll: true,
+                        reportDir: 'test-results/coverage',
+                        reportFiles: 'index.html',
+                        reportName 'Coverage Report'
                     ])
                 }
             }
