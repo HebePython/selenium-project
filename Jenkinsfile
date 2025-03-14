@@ -2,17 +2,8 @@ pipeline {
     agent any
 
     triggers {
-        // Add GitHub pull request trigger
-        githubPullRequest(
-            cron: 'H/5 * * * *',
-            triggerPhrase: '.*test\\s+this\\s+please.*',
-            onlyTriggerPhrase: false,
-            useGitHubHooks: true,
-            permitAll: false,
-            autoCloseFailedPullRequests: false,
-            displayBuildErrorsOnDownstreamBuilds: true,
-            whiteListTargetBranches: ['development', 'main']
-        )
+        // Simple periodic polling - this will work on all Jenkins installations
+        pollSCM('H/5 * * * *')
     }
     
     stages {
@@ -57,16 +48,44 @@ pipeline {
         
         stage('Run Tests') {
             steps {
-                sh '''
-                # Activate the virtual environment
-                . venv/bin/activate
-                
-                # Export environment variable for headless mode
-                export SELENIUM_HEADLESS=true
-                
-                # Run tests with Python module path
-                python -m pytest src/tests/ -v --junitxml=test-results/junit-report.xml --html=test-results/report.html
-                '''
+                script {
+                    def branch = env.BRANCH_NAME ?: env.GIT_BRANCH ?: 'unknown'
+                    def testSelector = ""
+                    
+                    echo "Detected branch: ${branch}"
+                    
+                    if (branch.contains('/')) {
+                        branch = branch.split('/')[1]  // Handle origin/branch format
+                    }
+                    
+                    if (branch == 'main') {
+                        echo "Running ALL tests for main branch"
+                        testSelector = ""  // Run all tests
+                    } 
+                    else if (branch == 'Development') {
+                        echo "Running selected tests for dev branch"
+                        testSelector = "not new_feature"  // Run everything except new-feature tests
+                    }
+                    else if (branch.startsWith('feature_') || branch.startsWith('feature/')) {
+                        echo "Running only new-feature tests for feature branch"
+                        testSelector = "new_feature"  // Only run new-feature tests
+                    }
+                    else {
+                        echo "Branch pattern not recognized, running all tests"
+                        testSelector = ""  // Default: run all tests
+                    }
+                    
+                    sh """
+                    # Activate the virtual environment
+                    . venv/bin/activate
+                    
+                    # Export environment variable for headless mode
+                    export SELENIUM_HEADLESS=true
+                    
+                    # Run tests with Python module path and appropriate filter
+                    python -m pytest src/tests/ -v ${testSelector ? "-k '" + testSelector + "'" : ""} --junitxml=test-results/junit-report.xml --html=test-results/report.html
+                    """
+                }
             }
             post {
                 always {
