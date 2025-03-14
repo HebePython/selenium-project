@@ -70,6 +70,10 @@ pipeline {
                         echo "Running only new-feature tests for feature branch"
                         testSelector = "new_feature"  // Only run new-feature tests
                     }
+                    else if (branch.startsWith('smoke')) {
+                        echo "Running smoke tests only"
+                        testSelector = "smoke"
+                    }
                     else {
                         echo "Branch pattern not recognized, running all tests"
                         testSelector = ""  // Default: run all tests
