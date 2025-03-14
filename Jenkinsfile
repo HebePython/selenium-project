@@ -64,11 +64,11 @@ pipeline {
                     } 
                     else if (branch == 'Development') {
                         echo "Running selected tests for dev branch"
-                        testSelector = "not new-feature"  // Run everything except new-feature tests
+                        testSelector = "not new_feature"  // Run everything except new-feature tests
                     }
                     else if (branch.startsWith('feature_') || branch.startsWith('feature/')) {
                         echo "Running only new-feature tests for feature branch"
-                        testSelector = "new-feature"  // Only run new-feature tests
+                        testSelector = "new_feature"  // Only run new-feature tests
                     }
                     else {
                         echo "Branch pattern not recognized, running all tests"
