@@ -16,6 +16,9 @@ pipeline {
         stage('Verify Environment') {
             steps {
                 sh '''
+                # check if venv exists, if not make new venv
+                if [ ! -d "venv" ]; then
+                echo "Creating new venv..."
                 echo "Python version:"
                 python3 --version
                 
@@ -24,6 +27,7 @@ pipeline {
                 
                 echo "ChromeDriver version:"
                 chromedriver --version
+                fi
                 '''
             }
         }
@@ -31,16 +35,18 @@ pipeline {
         stage('Prepare Test Environment') {
             steps {
                 sh '''
-                # Create a Python virtual environment
-                python3 -m venv venv
+                # Check if venv exists, create only if needed
+                if [ ! -d "venv" ]; then
+                    echo "Creating new virtual environment..."
+                    python3 -m venv venv
+                else
+                    echo "Using existing virtual environment"
+                fi
                 
-                # Activate the virtual environment
+                # Always activate and update
                 . venv/bin/activate
+                pip install --quiet --upgrade pytest pytest-html pytest-cov selenium
                 
-                # Install packages within virtual environment
-                pip install pytest pytest-html pytest-cov selenium
-                
-                # Create test results directory
                 mkdir -p test-results
                 '''
             }
