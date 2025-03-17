@@ -27,6 +27,7 @@ pipeline {
                 
                 echo "ChromeDriver version:"
                 chromedriver --version
+                fi
                 '''
             }
         }
